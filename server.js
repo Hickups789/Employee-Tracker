@@ -1,8 +1,10 @@
+
 const consoleTable = require("console.table");
 const inquirer = require("inquirer");
 const db = require("./db/connection");
 
-afterConnection = () => {
+
+const afterConnection = () => {
   console.log("************************************");
   console.log("************************************");
   console.log("**                                **");
@@ -19,7 +21,7 @@ function promptRequest() {
   inquirer
     .prompt([
       {
-        type: "request",
+        type: "list",
         message: "What would you like to do?",
         name: "choice",
         choices: [
@@ -29,8 +31,6 @@ function promptRequest() {
           "View All Roles",
           "Add Role",
           "View All Departments",
-          "Add Department",
-          "quit",
         ],
       },
     ])
@@ -54,7 +54,7 @@ function promptRequest() {
         case "View All Departments":
           viewDepartments();
           break;
-        case "Add Department":
+         case "Add Department":
           addDepartment();
           break;
         case "quit":
@@ -88,7 +88,7 @@ function viewRoles() {
 
 function viewDepartments() {
   db.query(
-    "SELECT employee.first_name, employee.last_name, department.name AS department FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id ORDER BY employee id; ",
+    "SELECT * FROM department ",
     function (err, res) {
       if (err) throw err;
       console.table(res);
@@ -126,13 +126,13 @@ function addEmployee() {
       },
     ])
     .then(function (val) {
-      const roleId = getRole().indexOF(val.role) + 1;
-      const managerId = getManager().indexOf(val.choice) + 1;
+      const roleId = getRole().indexOf(val.role) + 1;
+      const managerId = getManager().indexOf(val.choices) + 1;
       db.query(
         "INSERT INTO employee SET ?",
         {
           first_name: val.firstname,
-          last_name: val.last_name,
+          last_name: val.lastname,
           manager_id: managerId,
           role_id: roleId,
         },
@@ -247,3 +247,4 @@ function getManager() {
   );
   return managerArr;
 }
+afterConnection()
