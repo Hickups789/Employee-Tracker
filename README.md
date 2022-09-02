@@ -18,11 +18,9 @@ In this assignment I built a command-line application from scratch to manage a c
 
 ## Recorded Video reference
 
-[video reference]
-
-(https://user-images.githubusercontent.com/105450365/188234060-8dff04c9-de75-42b6-a2a9-508eaa1b4e2b.mp4)
+[video reference](https://user-images.githubusercontent.com/105450365/188234060-8dff04c9-de75-42b6-a2a9-508eaa1b4e2b.mp4)
 
 ## URL links
 
-[github](https://github.com/Hickups789/Employee-Tracker.git)
-[url](https://hickups789.github.io/Employee-Tracker/)
+- [github](https://github.com/Hickups789/Employee-Tracker.git)
+- [url](https://hickups789.github.io/Employee-Tracker/)
