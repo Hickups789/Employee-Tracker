@@ -97,30 +97,7 @@ function viewDepartments() {
   );
 }
 
-const roleArr = [];
-function getRole() {
-  db.query("SELECT * FROM role", function (err, res) {
-    if (err) throw err;
-    for (var i = 0; i < res.length; i++) {
-      roleArr.push(res[i].title);
-    }
-  });
-  return roleArr;
-}
 
-const managerArr = [];
-function getManager() {
-  db.query(
-    "SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",
-    function (err, res) {
-      if (err) throw err;
-      for (var i = 0; i < res.length; i++) {
-        managerArr.push(res[i].first_name);
-      }
-    }
-  );
-  return managerArr;
-}
 
 function addEmployee() {
   inquirer
@@ -174,20 +151,99 @@ function updateEmployee() {
     function (err, res) {
       if (err) throw err;
       console.log(res);
-      inquirer.prompt([
-        {
-          name: "lastname",
-          type: "rawlist",
-          choices: function () {
-            const lastName = [];
-            for (var i = 0; i < res.length; i++) {
-              lastName.push(res[i].last_name);
-            }
-            return lastName;
+      inquirer
+        .prompt([
+          {
+            name: "lastname",
+            type: "rawlist",
+            choices: function () {
+              const lastName = [];
+              for (var i = 0; i < res.length; i++) {
+                lastName.push(res[i].last_name);
+              }
+              return lastName;
+            },
+            message: "Enter the employee last name?",
           },
-          message: "Enter the employee last name?",
-        },
-      ]);
+          {
+            name: "role",
+            type: "rawlist",
+            message: "Enter employee's new title",
+            choices: addRole(),
+          },
+          
+        ])
+        .then(function (val) {
+          const roleId = addRole().indexOf(val.role) + 1;
+          db.query(
+            "UPDATE employee SET WHERE ?",
+            {
+              last_name: val.last_name,
+            },
+            {
+              role_id: roleId,
+            },
+
+            function (err) {
+              if (err) throw err;
+              console.table(val);
+              promptRequest();
+            });
+        });
+    });
+}
+
+function addRole () {
+ db.query("SELECT role.tile AS Title, role.salary AS Salary FROM role", function(err,res) {
+     inquirer.prompt([
+         {
+             name:"Title",
+             type: "input",
+             message:"What is the title of role?"
+         },
+         {
+           name:"Salary",
+           type: "input",
+           message: "Please enter salary"  
+         }
+
+     ]).then(function(res) {
+         db.query("INSERT INTO role SET ?",
+         {
+           title: res.Title,
+           salary: res.Salary,
+         },
+         function(err){
+             if (err) throw err
+             console.table(res);
+             promptRequest();
+         }
+         )
+     })
+ })
+}
+
+const roleArr = [];
+function getRole() {
+  db.query("SELECT * FROM role", function (err, res) {
+    if (err) throw err;
+    for (var i = 0; i < res.length; i++) {
+      roleArr.push(res[i].title);
+    }
+  });
+  return roleArr;
+}
+
+const managerArr = [];
+function getManager() {
+  db.query(
+    "SELECT first_name, last_name FROM employee WHERE manager_id IS NULL",
+    function (err, res) {
+      if (err) throw err;
+      for (var i = 0; i < res.length; i++) {
+        managerArr.push(res[i].first_name);
+      }
     }
   );
+  return managerArr;
 }
